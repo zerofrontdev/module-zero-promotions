@@ -59,6 +59,10 @@ class Gifts
     }
 
     /**
+     * Lines and rules are matched by SKU in any case (MySQL finds the product
+     * either way, so a rule's `wh10-s-blue` adds `WH10-S-Blue`); a new line
+     * is still looked up by the rule's own SKU.
+     *
      * @return bool Whether the cart's lines changed
      */
     public function sync(Quote $quote): bool
@@ -66,7 +70,7 @@ class Gifts
         $wanted = [];
         foreach ($this->applying[spl_object_id($quote)] ?? [] as $ruleId => $gift) {
             foreach ($gift['skus'] as $sku) {
-                $wanted[$ruleId . '|' . $sku] = ['rule' => $ruleId, 'sku' => $sku] + $gift;
+                $wanted[$ruleId . '|' . mb_strtolower($sku)] ??= ['rule' => $ruleId, 'sku' => $sku] + $gift;
             }
         }
         $changed = false;
@@ -74,7 +78,7 @@ class Gifts
             if (!self::isGift($item)) {
                 continue;
             }
-            $key = $item->getOptionByCode(self::OPTION)->getValue() . '|' . $item->getSku();
+            $key = $item->getOptionByCode(self::OPTION)->getValue() . '|' . mb_strtolower((string) $item->getSku());
             if (!isset($wanted[$key])) {
                 $quote->removeItem($item->getId() ?: $item->getItemId());
                 if (!$item->getId()) {

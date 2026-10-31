@@ -42,6 +42,8 @@ Part of [`zerofront/zero`](https://zerofront.dev), which installs the Zero theme
 (on a store with a free-gift rule: `ZERO_GIFT_NAME`, `ZERO_GIFT_TRIGGER`,
 `ZERO_GIFT_TRIGGER_QTY`).
 
+What changed in each release: [CHANGELOG.md](CHANGELOG.md).
+
 ## License
 
 OSL-3.0 or AFL-3.0, your choice: see `NOTICE.md`.
